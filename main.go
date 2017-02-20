@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"os"
 
@@ -46,11 +48,37 @@ func linkedinCallback(c echo.Context) error {
 		return err
 	}
 
-	u, _ := url.ParseRequestURI(m["uri"].(string))
-	code := u.Query().Get("code")
-	params := `grant_type=authorization_code&code=` + code + `&redirect_uri=https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback&client_id=81fz2e3avl91e1&client_secret=eT7BJdFihOW1gtvA`
+	// u, _ := url.ParseRequestURI(m["uri"].(string))
+	// code := u.Query().Get("code")
+	// params := `grant_type=authorization_code&code=` + code + `&redirect_uri=https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback&client_id=81fz2e3avl91e1&client_secret=eT7BJdFihOW1gtvA`
 
-	res, err := http.Post("https://www.linkedin.com/oauth/v2/accessToken?"+params, "application/x-www-form-urlencoded", nil)
+	// res, err := http.Post("https://www.linkedin.com/oauth/v2/accessToken?"+params, "application/x-www-form-urlencoded", nil)
+	// if err != nil {
+	// 	return err
+	// }
+
+	uu, _ := url.ParseRequestURI(m["uri"].(string))
+	code := uu.Query().Get("code")
+	apiUrl := "https://www.linkedin.com"
+	resource := "/oauth/v2/accessToken/"
+	data := url.Values{}
+	data.Set("grant_type", "authorization_code")
+	data.Add("code", code)
+	data.Add("redirect_uri", "https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback")
+	data.Add("client_id", "81fz2e3avl91e1")
+	data.Add("client_secret", "eT7BJdFihOW1gtvA")
+
+	u, _ := url.ParseRequestURI(apiUrl)
+	u.Path = resource
+	urlStr := fmt.Sprintf("%v", u) // "https://api.com/user/"
+
+	client := &http.Client{}
+	r, _ := http.NewRequest("POST", urlStr, bytes.NewBufferString(data.Encode())) // <-- URL-encoded payload
+	// r.Header.Add("Authorization", "auth_token=\"XXXXXXX\"")
+	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	res, err := client.Do(r)
 	if err != nil {
 		return err
 	}
