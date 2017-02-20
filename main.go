@@ -65,8 +65,8 @@ func linkedinCallback(c echo.Context) error {
 	data.Set("grant_type", "authorization_code")
 	data.Add("code", code)
 	data.Add("redirect_uri", "https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback")
-	data.Add("client_id", "81fz2e3avl91e1")
-	data.Add("client_secret", "eT7BJdFihOW1gtvA")
+	data.Add("client_id", os.Getenv("CLIENTID"))
+	data.Add("client_secret", os.Getenv("CLIENTSECRET"))
 
 	u, _ := url.ParseRequestURI(apiUrl)
 	u.Path = resource
