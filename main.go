@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"os"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -25,7 +27,11 @@ func main() {
 	e.GET("/auth/linkedin/callback", linkedinCallback)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	port := ":1323"
+	if p, ok := os.Getenv("PORT"); ok {
+		port = p
+	}
+	e.Logger.Fatal(e.Start(port))
 }
 
 func linkedinCallback(c echo.Context) error {
