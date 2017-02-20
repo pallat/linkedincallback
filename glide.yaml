@@ -1,0 +1,5 @@
+package: linkedin
+import:
+- package: github.com/labstack/echo
+  subpackages:
+  - middleware
