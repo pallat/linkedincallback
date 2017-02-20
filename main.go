@@ -1,9 +1,15 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"net/http"
 
 	"os"
+
+	"net/url"
+
+	"io/ioutil"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -40,6 +46,22 @@ func linkedinCallback(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+
+	u, _ := url.ParseRequestURI(m["uri"].(string))
+	code := u.Query().Get("code")
+	buf := bytes.NewBuffer([]byte(`grant_type=authorization_code&code=` + code + `&redirect_uri=https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback&client_id=81fz2e3avl91e1&client_secret=eT7BJdFihOW1gtvA`))
+
+	res, err := http.Post("https://www.linkedin.com/oauth/v2/accessToken", "application/x-www-form-urlencoded", buf)
+	if err != nil {
+		return err
+	}
+
+	b, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(b))
 
 	c.JSON(http.StatusOK, m)
 	return nil
