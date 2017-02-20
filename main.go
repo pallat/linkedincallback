@@ -42,12 +42,6 @@ func main() {
 }
 
 func linkedinCallback(c echo.Context) error {
-	m := map[string]interface{}{}
-	err := c.Bind(&m)
-	if err != nil {
-		return err
-	}
-
 	// u, _ := url.ParseRequestURI(m["uri"].(string))
 	// code := u.Query().Get("code")
 	// params := `grant_type=authorization_code&code=` + code + `&redirect_uri=https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback&client_id=81fz2e3avl91e1&client_secret=eT7BJdFihOW1gtvA`
@@ -57,8 +51,7 @@ func linkedinCallback(c echo.Context) error {
 	// 	return err
 	// }
 
-	uu, _ := url.ParseRequestURI(m["uri"].(string))
-	code := uu.Query().Get("code")
+	code := c.FormValue("code")
 	apiUrl := "https://www.linkedin.com"
 	resource := "/oauth/v2/accessToken/"
 	data := url.Values{}
