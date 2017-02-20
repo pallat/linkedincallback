@@ -28,7 +28,7 @@ func main() {
 
 	// Start server
 	port := ":1323"
-	if p, ok := os.Getenv("PORT"); ok {
+	if p := os.Getenv("PORT"); p != "" {
 		port = p
 	}
 	e.Logger.Fatal(e.Start(port))
