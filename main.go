@@ -52,6 +52,7 @@ func linkedinCallback(c echo.Context) error {
 	// }
 
 	code := c.FormValue("code")
+	c.Logger().Print(code)
 	apiUrl := "https://www.linkedin.com"
 	resource := "/oauth/v2/accessToken/"
 	data := url.Values{}
@@ -60,6 +61,8 @@ func linkedinCallback(c echo.Context) error {
 	data.Add("redirect_uri", "https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback")
 	data.Add("client_id", os.Getenv("CLIENTID"))
 	data.Add("client_secret", os.Getenv("CLIENTSECRET"))
+	c.Logger().Print(os.Getenv("CLIENTID"))
+	c.Logger().Print(os.Getenv("CLIENTSECRET"))
 
 	u, _ := url.ParseRequestURI(apiUrl)
 	u.Path = resource
@@ -81,6 +84,6 @@ func linkedinCallback(c echo.Context) error {
 		return err
 	}
 
-	c.String(http.StatusOK, string(b))
+	c.String(res.StatusCode, string(b))
 	return nil
 }
