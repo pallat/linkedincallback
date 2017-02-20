@@ -88,8 +88,6 @@ func linkedinCallback(c echo.Context) error {
 		return err
 	}
 
-	fmt.Println(string(b))
-
-	c.JSON(http.StatusOK, m)
+	c.String(http.StatusOK, string(b))
 	return nil
 }
