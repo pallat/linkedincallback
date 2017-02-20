@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
 
@@ -49,9 +48,9 @@ func linkedinCallback(c echo.Context) error {
 
 	u, _ := url.ParseRequestURI(m["uri"].(string))
 	code := u.Query().Get("code")
-	buf := bytes.NewBuffer([]byte(`grant_type=authorization_code&code=` + code + `&redirect_uri=https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback&client_id=81fz2e3avl91e1&client_secret=eT7BJdFihOW1gtvA`))
+	params := `grant_type=authorization_code&code=` + code + `&redirect_uri=https%3A%2F%2Flinkedincallback.herokuapp.com%2Fauth%2Flinkedin%2Fcallback&client_id=81fz2e3avl91e1&client_secret=eT7BJdFihOW1gtvA`
 
-	res, err := http.Post("https://www.linkedin.com/oauth/v2/accessToken", "application/x-www-form-urlencoded", buf)
+	res, err := http.Post("https://www.linkedin.com/oauth/v2/accessToken?"+params, "application/x-www-form-urlencoded", nil)
 	if err != nil {
 		return err
 	}
